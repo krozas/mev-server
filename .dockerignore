@@ -1,0 +1,15 @@
+#el * le dice que no copie todo
+*
+# el ! le dice solo lo que tiene que copiar
+!/package.json
+!/package-lock.json
+!/tsconfig.json
+!/src
+!/babel.config.js
+!/.babelrc
+!/.env
+!/.env.prod
+!/.prettierrc 
+!/.eslintrc.json 
+!/.eslintignore 
+!/ecosystem.config.js

@@ -1,0 +1,28 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      },
+      "@babel/preset-typescript"
+    ]
+  ],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "cwd": "babelrc",
+        "root": ["./"],
+        "alias": {
+          "@src": "./src/",
+          "@modulos": "./src/modules",
+          "@types": "./node_modules/@types",
+          "@external": "./src/external"
+        }
+      }
+    ]
+  ]
+}
