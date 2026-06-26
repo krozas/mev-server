@@ -10,7 +10,7 @@ export const getByFiltros = async (
 export const getPersonas = async (  
   params: FiltrosPersonaExpediente
 ) => {
-  const result = await repository.getPersonas(params);  
+  const result = await repository.getPersonas(params);   
   return result;
 };  
 

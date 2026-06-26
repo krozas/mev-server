@@ -22,8 +22,7 @@ export const remove = async (params: any) => {
 
  
 
-export const save = async (input: InputFuero): Promise<number> => {
-  console.log("🚀 ~ save ~ input:", input);
+export const save = async (input: InputFuero): Promise<number> => { 
   const id = await utils.save(input, "fueros");
   return id;
 };

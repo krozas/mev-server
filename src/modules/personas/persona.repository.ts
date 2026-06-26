@@ -27,14 +27,13 @@ export const getByFiltros = async (
 };
 
 export const save = async (input: InputPersona): Promise<number> => {  
-  console.log("🚀 ~ save ~ input:", input)
   let res: any;
   const idExpediente = input.idExpediente; 
   delete input.idExpediente; 
   const id = await utils.save(input, 'personas'); 
-  if (idExpediente && id) {
+  /*if (idExpediente && id) {
     res =  await utils.save({id:0, idPersona: id, idExpediente: idExpediente }, 'personas_expedientes');
-  }
+  }*/
   return res;
 };
 

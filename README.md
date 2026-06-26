@@ -85,7 +85,7 @@ npm
 No se necesita instalar SQLite manualmente
 
 Descargar el proyecto desde GitHub
-git clone https://github.com/pjn/mev-server.git
+git clone https://github.com/krozas/mev-server.git
 
 
 ---
@@ -104,3 +104,14 @@ El servidor corre por defecto en: http://localhost:9100
 ## 📌 Notas importantes
 
 SQLite en memoria se borra cada vez que el servidor se reinicia. 
+
+
+### Con Docker (alternativa) VER README.Docker.md
+
+Requiere Docker Desktop instalado y corriendo.
+
+```bash 
+docker compose up --build   # primera vez (construye las imágenes)
+docker compose up           # siguientes veces
+docker compose down         # para detener
+```

@@ -17,8 +17,7 @@ export const remove = async (params: any) => {
   return id;
 };
 
-export const save = async (input: InputCiudad): Promise<number> => {
-  console.log("🚀 ~ save ~ input:", input);
+export const save = async (input: InputCiudad): Promise<number> => { 
   const id = await utils.save(input, "ciudades");
   return id;
 };

@@ -66,8 +66,8 @@
   "dependencies": {
     "@databases/sqlite": "^4.0.2",
     "@logtail/node": "0.4.21",
-    "@logtail/winston": "0.4.21",
-    "axios": "^1.5.1",
+    "@logtail/winston": "0.4.21",        
+    "axios": "1.16.1",
     "better-sqlite3": "^12.5.0",
     "body-parser": "^1.20.2",
     "compression": "1.7.4",

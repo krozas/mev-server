@@ -23,19 +23,30 @@ export async function makeHttpRequest(
     });
 }
 
-export async function save(input: any, tabla: string) { 
-  let newId: number = 0;
-  let resp: number[] = [];
-  try {
-    if (input.id === 0) {      //es un nuevo objeto
-      delete input.id;
-      resp = await knexMev(tabla).insert(input);
-    } else resp = await knexMev(tabla).where("id", input.id).update(input);  
-    if (resp.length > 0 || resp!==undefined) {
-       newId = Array.isArray(resp) ? resp[0] : resp; 
+export async function save(input: any, tabla: string): Promise<number> {
+
+  try { 
+    const idActual = Number(input.id);
+
+    if (!idActual || idActual === 0) { 
+      const dataToInsert = { ...input };
+      delete dataToInsert.id;
+
+      const [insertedId] = await knexMev(tabla).insert(dataToInsert); 
+      
+      return insertedId;  
+
+    } else { 
+      const filasAfectadas = await knexMev(tabla)
+        .where("id", idActual)
+        .update(input);
+
+      console.log("🚀 ~ save ~ Filas actualizadas:", filasAfectadas); 
+      return idActual; 
     }
+    
   } catch (err) {
-    console.error(err);
+    console.error("❌ Error en utils.save:", err);
+    throw err; 
   }
-  return newId;
 }

@@ -1,5 +1,5 @@
 import knexMev from "@src/config/knexMev";
-import * as utils from "@src/utils/utils";
+import * as utils from "@src/utils/utils"; 
 import moment from "moment";
 
 export const getByFiltros = async (params: FiltrosPersonaExpediente) => {
@@ -37,7 +37,7 @@ export const getByFiltros = async (params: FiltrosPersonaExpediente) => {
   return await query;
 };
 
-export const getPersonas = async (params: FiltrosPersonaExpediente) => {
+export const getPersonas = async (params: FiltrosPersonaExpediente) => { 
   let query = knexMev(`personas_expedientes as pe`)
     .join("personas as p", "p.id", "pe.idPersona")
     .join("expedientes as e", "e.id", "pe.idExpediente")
@@ -46,10 +46,12 @@ export const getPersonas = async (params: FiltrosPersonaExpediente) => {
     .select(
       knexMev.raw([
         "pe.*",
-        "p.*",
+        "p.apellidos",
+        "p.nombres",
+        "p.cuit",
         `t.descripcion as tipoVinculo`,
         `e.caratula`,
-        `CONCAT(o.codigo, ' ', e.tipo, ' ', e.numero, '/', e.anio) as claveExpediente`,
+      `CONCAT(o.codigo, ' ', e.tipo, ' ', e.numero, '/', e.anio) as claveExpediente`,
       ]),
     )
 
@@ -62,34 +64,39 @@ export const getPersonas = async (params: FiltrosPersonaExpediente) => {
   }
   return await query;
 };
+ 
+ 
 
-export const save = async (input: InputExpediente): Promise<number> => {
-  console.log("🚀 ~ save ~ input:", input);
+export const save = async (input: InputExpediente): Promise<number> => { 
   const { personas, ...expedienteData } = input as any;
-  let res = await utils.save(expedienteData, "expedientes");
+  
+  // 1. Guardamos/Actualizamos el expediente principal
+  let idExpediente = await utils.save(expedienteData, "expedientes");
 
-  if (personas) {
-    const personasExpe = await getPersonas({ idExpediente: res });
-    console.log("🚀 ~ save ~ personasExpe:", personasExpe);
-    const idsModificados = new Set(personas.map((p) => p.idPersona));
-    const faltanEnModificada = personasExpe.filter(
-      (p) => !idsModificados.has(p.idPersona),
+  if (personas && Array.isArray(personas)) {
+    const fechaHoy = moment().format("YYYY-MM-DD");
+    const relacionesExistentes = await knexMev("personas_expedientes")
+      .where({ idExpediente });
+    const idsPersonasInput = new Set(personas.map(p => p.idPersona));
+    
+    const relacionesAQuitar = relacionesExistentes.filter(
+      r => !idsPersonasInput.has(r.idPersona) && r.deletedAt === null
     );
-    const idsOriginales = new Set(personasExpe.map(p => p.idPersona));
-   const sonNuevos = personas.filter(p => !idsOriginales.has(p.idPersona));
-    console.log("🚀 ~ save ~ sonNuevos:", sonNuevos)
-    console.log("Elementos que se quitaron:", faltanEnModificada);
-    for (const persona of sonNuevos) {
-      persona.idExpediente = res;
-      persona.id = persona.id ?? 0;
-      await utils.save(persona, "personas_expedientes");
+
+    for (const rel of relacionesAQuitar) {
+      await knexMev("personas_expedientes")
+        .where({ id: rel.id })
+        .update({ deletedAt: fechaHoy });
     }
-     for (const p of faltanEnModificada) {
-      p.deletedAt = moment(new Date()).format("YYYY-MM-DD");
-      await utils.save({ id: p.id, deletedAt: p.deletedAt }, 'personas_expedientes');
+ 
+    for (const pInput of personas) { 
+      pInput.id = pInput.id ?? 0;
+      pInput.idExpediente = pInput.idExpediente ?? idExpediente; 
+        const pe = await utils.save(pInput, "personas_expedientes"); 
     }
   }
-  return res;
+   
+  return idExpediente;
 };
 
 export const getDataAnioCiudadFuero = async () => {
