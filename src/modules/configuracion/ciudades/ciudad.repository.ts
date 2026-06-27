@@ -4,9 +4,8 @@ import moment from "moment";
 
 export const getByFiltros = async (params: Ciudad) => {
   let query = knexMev(`ciudades as c`).select().whereNull("deletedAt");
-
   if (params.id) {
-    query.where("pe.id", params.id);
+    query.where("c.id", params.id);
   }
   return await query;
 };

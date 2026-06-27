@@ -87,7 +87,7 @@ async function setupAndUseDatabase() {
       table.increments("id").primary();
       table.string("codigo").unique().notNullable();
       table.string("nombre").notNullable();
-      table.string("caratula").notNullable();
+      table.string("caratula");
       table
         .integer("idCiudad")
         .notNullable()
